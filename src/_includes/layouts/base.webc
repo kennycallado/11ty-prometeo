@@ -1,0 +1,59 @@
+---
+auth: true
+---
+
+<!doctype html>
+<html
+  data-bs-theme="light"
+  lang="es">
+  <head>
+    <title @text="title || 'hello'"></title>
+
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1" />
+
+    <link
+      :href="getBundleFileUrl('css')"
+      rel="stylesheet"
+      webc:keep />
+
+    <link
+      href="/assets/css/style.css"
+      rel="stylesheet"
+      webc:keep />
+
+    <link
+      href="/assets/css/custom.css"
+      rel="stylesheet"
+      webc:keep />
+
+    <script
+      src="/assets/js/theme.js"
+      type="module"
+      webc:keep></script>
+
+    <script
+      src="/assets/js/auth0-spa-js.development.js"
+      type="module"
+      webc:keep></script>
+  </head>
+
+  <body>
+    <main
+      id="content"
+      @raw="content"></main>
+
+    <script
+      type="module"
+      :src="getBundleFileUrl('js')"
+      webc:keep></script>
+
+    <script
+      type="module"
+      src="/assets/js/bootstrap.bundle.min.js"
+      webc:keep></script>
+  </body>
+</html>
