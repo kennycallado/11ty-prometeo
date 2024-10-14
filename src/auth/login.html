@@ -1,0 +1,114 @@
+---
+layout: base
+title: Login
+
+auth: false
+---
+
+<h1>Login</h1>
+
+<script
+  type="module"
+  webc:keep>
+  import { auth } from '/assets/js/auth.js'
+
+  const form = document.getElementById('form-login')
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault()
+
+    // validate form
+    const [username, password] = form.elements
+
+    if (!username.value || !password.value) {
+      alert('Error: Invalid credentials\n- Please fill in all fields')
+      return
+    }
+
+    // if (username.value.length < 6 && password.value.length < 6) {
+    //   alert(
+    //     'Error: Invalid credentials\n- Username and password must be at least 6 characters long',
+    //   )
+    //   return
+    // }
+
+    // send request to server
+
+    auth.signin(username.value, password.value).then((foo) => {
+      if (foo) {
+        const pathname = localStorage.getItem('pathname')
+        if (pathname) {
+          localStorage.removeItem('pathname')
+          window.location.href = pathname
+
+          return
+        } else {
+          window.location.href = '/'
+
+          return
+        }
+      } else {
+        console.log('error')
+        // handle error
+
+        return
+      }
+    })
+  })
+</script>
+
+<div class="row justify-content-center">
+  <div class="col col-lg-6">
+    <form id="form-login">
+      <div class="mb-3">
+        <label
+          class="form-label"
+          for="inputUsername">
+          Username
+        </label>
+
+        <input
+          class="form-control"
+          id="inputUsername"
+          name="username"
+          autocomplete="on"
+          type="text" />
+      </div>
+
+      <div class="mb-3">
+        <label
+          class="form-label"
+          for="inputPassword">
+          Password
+        </label>
+
+        <input
+          class="form-control"
+          id="inputPassword"
+          autocomplete="on"
+          type="password" />
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <div class="mb-3 form-check">
+          <input
+            class="form-check-input"
+            id="inputCheck"
+            type="checkbox" />
+
+          <label
+            class="form-check-label"
+            for="inputCheck">
+            Remember me
+          </label>
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary">
+          Submit
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
