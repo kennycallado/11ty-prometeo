@@ -21,6 +21,8 @@ export default function (eleventyConfig) {
     components: 'src/_includes/components/**/*.webc',
   })
 
+  eleventyConfig.addBundle('global')
+
   eleventyConfig.addPlugin(pluginBundle, {
     toFileDirectory: '../dist/assets/bundle',
   })
