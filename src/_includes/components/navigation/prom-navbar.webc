@@ -83,6 +83,19 @@
                 Login
               </a>
             </li>
+
+            <li>
+              <a
+                onclick="
+                localStorage.removeItem('token')
+                localStorage.removeItem('user')
+
+                window.location.href = '/'
+                "
+                class="dropdown-item disabled">
+                Logout
+              </a>
+            </li>
           </ul>
         </li>
       </ul>
@@ -95,6 +108,8 @@
           const authLinks = navList.querySelectorAll('.disabled')
           const adminLinks = navList.querySelectorAll('[data-admin].d-none')
 
+          const loginLink = navList.querySelector('[href="/auth/login"]')
+
           new MutationObserver((mutations) => {
             mutations.forEach((mutation) => {
               const isAuth = mutation.target.attributes.getNamedItem('is-auth')
@@ -103,6 +118,7 @@
               if (isAuth) {
                 authLinks.forEach((link) => {
                   link.classList.toggle('disabled', isAuth.value === 'false')
+                  loginLink.classList.toggle('disabled', isAuth.value === 'true')
                 })
               }
 
