@@ -1,0 +1,23 @@
+---
+layout: base
+title: User Management
+
+admin: true
+auth: true
+---
+
+<h1>Admin</h1>
+
+<div class="d-flex">
+  <a
+    class="text-decoration-none text-primary"
+    :href="url('/auth/admin')">
+    <span class="display-6">&larr;</span>
+  </a>
+
+  <h2 class="ms-4">User manager</h2>
+</div>
+
+<!-- <prom-table-users></prom-table-users> -->
+
+<button class="btn btn-primary float-end">Create</button>

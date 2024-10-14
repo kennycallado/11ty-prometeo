@@ -1,0 +1,23 @@
+---
+layout: base
+title: Admin Dashboard
+
+admin: true
+auth: true
+---
+
+<h1>Admin</h1>
+
+<div class="list-group text-center">
+  <a
+    class="list-group-item list-group-item-action"
+    :href="url('/auth/admin/users')">
+    Manage users
+  </a>
+
+  <a
+    class="list-group-item list-group-item-action"
+    href="#">
+    A second option
+  </a>
+</div>
