@@ -1,0 +1,120 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container-fluid">
+    <a
+      class="navbar-brand"
+      :href="url('/')">
+      Navbar
+    </a>
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div
+      class="collapse navbar-collapse justify-content-center"
+      id="navbarSupportedContent">
+      <ul class="navbar-nav mb-2 mb-lg-0 text-end">
+        <li class="nav-item">
+          <a
+            class="nav-link active"
+            aria-current="page"
+            :href="url('/')">
+            Home
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            :href="url('/about')">
+            About
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            :href="url('/blog')">
+            Blog
+          </a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            href="#">
+            Access
+          </a>
+
+          <ul class="dropdown-menu text-end">
+            <li>
+              <a
+                class="dropdown-item disabled"
+                :href="url('/resources')">
+                Resources
+              </a>
+            </li>
+
+            <li>
+              <a
+                data-admin="true"
+                class="dropdown-item d-none"
+                :href="url('/auth/admin')">
+                Admin
+              </a>
+            </li>
+
+            <li><hr class="dropdown-divider" /></li>
+
+            <li>
+              <a
+                class="dropdown-item"
+                href="/auth/login">
+                Login
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+
+      <script>
+        window.addEventListener('DOMContentLoaded', () => {
+          const navList = document.querySelector('.navbar-nav')
+          const security = document.querySelector('prom-security')
+
+          const authLinks = navList.querySelectorAll('.disabled')
+          const adminLinks = navList.querySelectorAll('[data-admin].d-none')
+
+          new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+              const isAuth = mutation.target.attributes.getNamedItem('is-auth')
+              const isAdmin = mutation.target.attributes.getNamedItem('is-admin')
+
+              if (isAuth) {
+                authLinks.forEach((link) => {
+                  link.classList.toggle('disabled', isAuth.value === 'false')
+                })
+              }
+
+              if (isAdmin) {
+                adminLinks.forEach((link) => {
+                  link.classList.toggle('d-none', isAdmin.value === 'false')
+                })
+              }
+            })
+          }).observe(security, { attributes: true })
+        })
+      </script>
+    </div>
+  </div>
+</nav>

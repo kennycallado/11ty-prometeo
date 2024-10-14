@@ -1,0 +1,127 @@
+<!-- <style webc:bucket="global"> -->
+<style>
+  .hidde {
+    opacity: 0;
+    transition: opacity var(--transition-duration);
+  }
+</style>
+
+<!-- <style webc:scoped webc:bucket="global"> -->
+<style webc:scoped>
+  :host {
+    width: 100%;
+    height: 100%;
+
+    background-color: rgba(var(--bs-body-bg-rgb), 0.7);
+    backdrop-filter: blur(7px);
+  }
+
+  :host .warning {
+    position: absolute;
+    top: 30vh;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    opacity: 0;
+  }
+
+  :host .box {
+    opacity: 1 !important;
+    transition: opacity var(--transition-duration);
+  }
+</style>
+
+<div class="warning text-center">
+  <h4>Please login to access</h4>
+  <a
+    onclick="
+      const pathname = window.location.pathname
+      localStorage.setItem('pathname', pathname)
+    "
+    :href="url('/auth/login')">
+    Login
+  </a>
+</div>
+
+<noscript webc:keep>
+  <div
+    style="opacity: 1"
+    class="warning text-center">
+    <h4>Please enable JavaScript to access</h4>
+  </div>
+</noscript>
+
+<!-- <script type="module"> -->
+<script
+  type="module"
+  webc:keep>
+  import { auth } from '/assets/js/auth.js'
+
+  if (!customElements.get('prom-users-table'))
+    customElements.define(
+      'prom-security',
+      class extends HTMLElement {
+        static observedAttributes = ['is-auth', 'is-admin']
+
+        warning = this.children[0]
+
+        dataAuth = this.hasAttribute('data-auth')
+        dataAdmin = this.hasAttribute('data-admin')
+
+        duration = getComputedStyle(document.body)
+          .getPropertyValue('--transition-duration')
+          .replace('s', '')
+
+        attributeChangedCallback(name, oldValue, newValue) {
+          if (name === 'is-auth' && newValue !== oldValue) {
+            this.checkAuth()
+          }
+
+          if (name === 'is-admin' && newValue !== oldValue) {
+            this.checkAuth()
+          }
+        }
+
+        connectedCallback() {
+          this.setAttribute('is-auth', 'false')
+          this.setAttribute('is-admin', 'false')
+
+          if (!this.dataAuth) {
+            this.classList.add('hidde')
+            setTimeout(() => (this.style.display = 'none'), this.duration * 1000)
+          }
+
+          this.checkAuth()
+        }
+
+        checkAuth() {
+          auth.isAuthenticated().then((isAuth) => {
+            if (!isAuth) {
+              setTimeout(() => this.warning.classList.add('box'), this.duration * 1000)
+            } else {
+              this.setAttribute('is-auth', 'true')
+
+              auth.isAdmin().then((isAdmin) => {
+                if (isAdmin) {
+                  this.setAttribute('is-admin', 'true')
+                }
+
+                if (this.dataAdmin) {
+                  if (isAdmin) {
+                    this.classList.add('hidde')
+                    setTimeout(() => (this.style.display = 'none'), this.duration * 1000)
+                  } else {
+                    setTimeout(() => this.warning.classList.add('box'), this.duration * 1000)
+                  }
+                } else {
+                  this.classList.add('hidde')
+                  setTimeout(() => (this.style.display = 'none'), this.duration * 1000)
+                }
+              })
+            }
+          })
+        }
+      },
+    )
+</script>
