@@ -1,5 +1,8 @@
 ---
+admin: true
 auth: true
+
+subTitle: 'Prometeo Project'
 ---
 
 <!doctype html>
@@ -7,16 +10,21 @@ auth: true
   data-bs-theme="light"
   lang="es">
   <head>
-    <title @text="title || 'hello'"></title>
-
     <meta charset="UTF-8" />
 
     <meta
       name="viewport"
       content="width=device-width, initial-scale=1" />
 
+    <title @text="title + ' | ' + subTitle || subTitle"></title>
+
     <link
-      :href="getBundleFileUrl('css')"
+      rel="icon"
+      href="/assets/favicon.ico"
+      type="image/x-icon" />
+
+    <link
+      :href="getBundleFileUrl('css', 'global')"
       rel="stylesheet"
       webc:keep />
 
@@ -30,6 +38,15 @@ auth: true
       rel="stylesheet"
       webc:keep />
 
+    <style
+      @raw="getBundle('css')"
+      webc:keep></style>
+
+    <script
+      type="module"
+      :src="getBundleFileUrl('js', 'global')"
+      webc:keep></script>
+
     <script
       src="/assets/js/theme.js"
       type="module"
@@ -39,21 +56,31 @@ auth: true
       src="/assets/js/auth0-spa-js.development.js"
       type="module"
       webc:keep></script>
-  </head>
-
-  <body>
-    <main
-      id="content"
-      @raw="content"></main>
-
-    <script
-      type="module"
-      :src="getBundleFileUrl('js')"
-      webc:keep></script>
 
     <script
       type="module"
       src="/assets/js/bootstrap.bundle.min.js"
+      webc:keep></script>
+  </head>
+
+  <body>
+    <prom-navbar></prom-navbar>
+
+    <div class="position-relative pt-4">
+      <prom-security
+        class="position-absolute top-0"
+        :data-auth="auth"
+        :data-admin="admin"></prom-security>
+
+      <main
+        id="content"
+        class="container"
+        @raw="content"></main>
+    </div>
+
+    <script
+      type="module"
+      @raw="getBundle('js')"
       webc:keep></script>
   </body>
 </html>
