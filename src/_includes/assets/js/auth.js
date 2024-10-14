@@ -73,47 +73,16 @@ class Auth {
     }
   }
 
-  // fetch(`${this.#endpoint}/signin`, {
-  //   method: 'POST',
-  //   headers: {
-  //     Accept: 'application/json',
-  //     'Content-Type': 'application/json',
-  //   },
-  //   body: JSON.stringify({
-  //     NS: 'test',
-  //     DB: 'test',
-  //     AC: 'user',
-  //     username,
-  //     password,
-  //   }),
-  // })
-  //   .then(async (res) => await res.json())
-  //   .then((data) => {
-  //     console.log(data)
-  //     if (data.code !== 200) {
-  //       alert(`Error:\n- ${data.description}\n- ${data.information}`)
-  //       // throw new Error(data.error)
-  //       return false
-  //     }
-  //     this.setToken(data.token)
-  //     this.getUser()
-  //
-  //     return true
-  //   })
-  // .catch((err) => {
-  //   alert(`Error:\n- ${err}`)
-  //   return false
-  // })
-
   async getUser() {
     // if no token error
     // if error remove token
-    return await fetch(`${this.#endpoint}/key/user`, {
-      method: 'GET',
+    return await fetch(`${this.#endpoint}/sql`, {
+      method: 'POST',
       headers: {
         Accept: 'application/json',
         Authorization: `Bearer ${this.getToken()}`,
       },
+      body: `SELECT * FROM $auth.id;`,
     })
       .then(async (res) => await res.json())
       .then((data) => {
