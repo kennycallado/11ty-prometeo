@@ -1,0 +1,27 @@
+services:
+  # eleventy:
+  #   image: node:alpine
+  #   container_name: 11ty
+  #   ports:
+  #     - '3000:3000'
+  #   volumes:
+  #     - .:/app
+  #   working_dir: /app
+  #   command: npm run dev
+  #   restart: always
+
+  surrealdb:
+    image: surrealdb/surrealdb:v2.0.1
+    container_name: surrealdb
+    ports:
+      - '8000:8000'
+    command:
+      - start
+      - memory
+      - -A
+      - --no-banner
+      # - --log=trace
+      # - --log=info
+      - --user=root
+      - --pass=root
+      - --bind=0.0.0.0:8000
