@@ -37,13 +37,19 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({
     './node_modules/bootstrap/dist/js/bootstrap.bundle.min.js':
       'assets/js/bootstrap.bundle.min.js',
+    './node_modules/bootstrap/dist/js/bootstrap.bundle.min.js.map':
+      'assets/js/bootstrap.bundle.min.js.map',
   })
 
   eleventyConfig.addPassthroughCopy({
     './node_modules/@auth0/auth0-spa-js/dist/auth0-spa-js.development.js':
       'assets/js/auth0-spa-js.development.js',
+    './node_modules/@auth0/auth0-spa-js/dist/auth0-spa-js.development.js.map':
+      'assets/js/auth0-spa-js.development.js.map',
     './node_modules/@auth0/auth0-spa-js/dist/auth0-spa-js.production.js':
       'assets/js/auth0-spa-js.production.js',
+    './node_modules/@auth0/auth0-spa-js/dist/auth0-spa-js.production.js.map':
+      'assets/js/auth0-spa-js.production.js.map',
   })
 
   eleventyConfig.on('eleventy.after', async (ctx) => {
