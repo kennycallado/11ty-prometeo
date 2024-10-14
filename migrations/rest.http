@@ -1,0 +1,41 @@
+### SIGNIN kenny
+POST http://localhost:8000/signin
+Accept: application/json
+
+{
+  "NS": "test",
+  "DB": "test",
+  "AC": "user",
+  "username": "kenny",
+  "password": "kenny"
+}
+
+### SIGNIN foo
+POST http://localhost:8000/signin
+Accept: application/json
+
+{
+  "NS": "test",
+  "DB": "test",
+  "AC": "user",
+  "username": "foo",
+  "password": "foo"
+}
+
+### CREATE foo
+POST http://localhost:8000/key/user
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer <token>
+
+{
+  "email": "foo@callado.es",
+  "name": "Kenny Callado",
+  "username": "foo",
+  "password": "foo"
+}
+
+###
+GET http://localhost:8000/key/user
+Accept: application/json
+Authorization: Bearer <token>
