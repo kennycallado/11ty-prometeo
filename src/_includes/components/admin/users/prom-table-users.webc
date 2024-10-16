@@ -1,0 +1,140 @@
+<prom-database
+  query="LIVE SELECT time::format(auth_until, '%d-%m-%Y') as auth_until,* FROM user;"
+  target-id="result">
+  <table class="table table-sm table-hover">
+    <thead>
+      <tr>
+        <th scope="col">name</th>
+        <th scope="col">username</th>
+        <th scope="col">email</th>
+        <th scope="col">role</th>
+        <th scope="col">auth_until</th>
+        <th scope="col">actions</th>
+      </tr>
+    </thead>
+
+    <tbody id="result">
+      <tr class="placeholder-glow">
+        <td><span class="placeholder col-4"></span></td>
+        <td><span class="placeholder col-6"></span></td>
+        <td><span class="placeholder col-6"></span></td>
+        <td><span class="placeholder col-6"></span></td>
+        <td><span class="placeholder col-9"></span></td>
+        <td>
+          <button
+            class="btn btn-sm btn-warning disabled placeholder col-2"
+            aria-disabled="true"></button>
+          <button
+            class="btn btn-sm btn-success disabled placeholder col-2"
+            aria-disabled="true"></button>
+          <button
+            class="btn btn-sm btn-danger disabled placeholder col-2"
+            aria-disabled="true"></button>
+        </td>
+      </tr>
+
+      <tr class="placeholder-glow">
+        <td><span class="placeholder col-6"></span></td>
+        <td><span class="placeholder col-3"></span></td>
+        <td><span class="placeholder col-8"></span></td>
+        <td><span class="placeholder col-6"></span></td>
+        <td><span class="placeholder col-9"></span></td>
+        <td>
+          <button
+            class="btn btn-sm btn-warning disabled placeholder col-2"
+            aria-disabled="true"></button>
+          <button
+            class="btn btn-sm btn-success disabled placeholder col-2"
+            aria-disabled="true"></button>
+          <button
+            class="btn btn-sm btn-danger disabled placeholder col-2"
+            aria-disabled="true"></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <template slot="template">
+    {% for user in result %}
+    <tr data-id="{{ user.id }}">
+      <td>{{ user.name }}</td>
+      <td>{{ user.username }}</td>
+      <td>{{ user.email }}</td>
+      <td>
+        <button data-role>↗️</button>
+        <span>{{ user.role or 'user' }}</span>
+      </td>
+      <td>
+        <button data-inc>+</button>
+        <span class="mx-1">{{ user.auth_until }}</span>
+        <button data-dec>-</button>
+      </td>
+      <td>
+        <button class="btn btn-sm btn-warning"><span>&#x21ba;</span></button>
+        <button class="btn btn-sm btn-success"><span>&#x21b2;</span></button>
+        <button class="btn btn-sm btn-danger"><span>&#x292B;</span></button>
+      </td>
+    </tr>
+    {% endfor %}
+  </template>
+
+  <script
+    type="module"
+    webc:keep>
+    import { auth } from '/assets/js/auth.js'
+
+    const promDatabase = document.querySelector('prom-database')
+
+    promDatabase.addEventListener('prom-database:first', (evt) => actions(evt))
+    promDatabase.addEventListener('prom-database:updated', (evt) => actions(evt))
+    promDatabase.addEventListener('prom-database:created', (evt) => actions(evt))
+
+    function actions(evt) {
+      const urlDb = `${DB_URL}/sql`
+
+      evt.detail.data.forEach((item) => {
+        const row = promDatabase.querySelector(`tr[data-id="${item.id}"]`)
+
+        const inc = row.querySelector('[data-inc]')
+        const dec = row.querySelector('[data-dec]')
+        const role = row.querySelector('[data-role]')
+
+        inc.addEventListener('click', () => {
+          fetch(urlDb, {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              Authorization: `Bearer ${auth.getToken()}`,
+              'Content-Type': 'application/json',
+            },
+            body: `UPDATE user SET auth_until = auth_until + 1w WHERE id = ${item.id};`,
+          })
+        })
+
+        dec.addEventListener('click', () => {
+          fetch(urlDb, {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              Authorization: `Bearer ${auth.getToken()}`,
+              'Content-Type': 'application/json',
+            },
+            body: `UPDATE user SET auth_until = auth_until - 1w WHERE id = ${item.id};`,
+          })
+        })
+
+        role.addEventListener('click', () => {
+          fetch(urlDb, {
+            method: 'POST',
+            headers: {
+              Accept: 'application/json',
+              Authorization: `Bearer ${auth.getToken()}`,
+              'Content-Type': 'application/json',
+            },
+            body: `UPDATE user SET role = (IF role IS 'admin' { NONE } ELSE { 'admin' }) WHERE id = ${item.id};`,
+          })
+        })
+      })
+    }
+  </script>
+</prom-database>

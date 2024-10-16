@@ -58,7 +58,7 @@
   webc:keep>
   import { auth } from '/assets/js/auth.js'
 
-  if (!customElements.get('prom-users-table'))
+  if (!customElements.get('prom-security'))
     customElements.define(
       'prom-security',
       class extends HTMLElement {

@@ -1,0 +1,42 @@
+<div>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <slot
+          class="modal-title"
+          name="header"
+          webc:keep></slot>
+
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <slot
+          name="body"
+          webc:keep></slot>
+      </div>
+
+      <div
+        class="modal-footer"
+        webc:keep>
+        <slot name="footer"></slot>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { auth } from '/assets/js/auth.js'
+
+  if (!customElements.get('prom-modal'))
+    customElements.define(
+      'prom-modal',
+      class extends HTMLElement {
+        connectedCallback() {}
+      },
+    )
+</script>

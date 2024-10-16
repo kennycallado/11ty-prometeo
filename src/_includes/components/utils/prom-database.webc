@@ -1,0 +1,200 @@
+<template webc:root>
+  <slot></slot>
+  <slot name="template"></slot>
+</template>
+
+<script
+  type="module"
+  webc:keep>
+  import { auth } from '/assets/js/auth.js'
+
+  if (!customElements.get('prom-database'))
+    customElements.define(
+      'prom-database',
+      class extends HTMLElement {
+        // static observedAttributes = ['token', 'query']
+        socket = new WebSocket(`${DB_URL}/rpc`)
+        token = auth.getToken()
+        view = nunjucks
+
+        template = this.querySelector('[slot="template"]')
+
+        targetId = this.getAttribute('target-id')
+        targetElement = () => this.children[0].querySelector(`#${this.targetId}`)
+
+        query = this.getAttribute('query')
+
+        connectedCallback() {
+          this.validation()
+
+          this.dbListen()
+          this.dbInit()
+
+          this.emit('ready')
+        }
+
+        emit(type, detail = {}) {
+          // Create a new event
+          let event = new CustomEvent(`prom-database:${type}`, {
+            bubbles: true,
+            cancelable: true,
+            detail: detail,
+          })
+          // Dispatch the event
+          return this.dispatchEvent(event)
+        }
+
+        validation() {
+          if (!this.query) {
+            throw new Error('No query provided')
+          }
+        }
+
+        updateRow(data) {
+          let target = this.targetElement().querySelector(`tr[data-id="${data.id}"]`)
+          let template = this.template.innerHTML
+
+          let rendered = this.view.renderString(template, { result: [data] })
+
+          if (target) {
+            this.changeDetected(target, 'table-info')
+            target.innerHTML = rendered
+            // target.outerHTML = rendered // this will remove event listeners and css classes
+          }
+        }
+
+        createRow(data) {
+          let template = this.template.innerHTML
+          let rendered = this.view.renderString(template, { result: [data] })
+          let tr = document.createElement('tr')
+
+          tr.innerHTML = rendered
+          tr.dataset.id = data.id
+
+          this.targetElement().appendChild(tr)
+          this.changeDetected(tr, 'table-success')
+        }
+
+        deleteRow(data) {
+          let target = this.targetElement().querySelector(`tr[data-id="${data.id}"]`)
+
+          if (target) {
+            this.changeDetected(target, 'table-danger')
+
+            setTimeout(() => {
+              target.remove()
+            }, 1000)
+          }
+        }
+
+        changeDetected(target, color = 'table-warning') {
+          target.classList.add(color)
+          target.classList.add('opacity-90')
+
+          setTimeout(() => {
+            target.classList.remove(color)
+
+            setTimeout(() => {
+              target.classList.remove('opacity-90')
+            }, 500)
+          }, 1000)
+        }
+
+        dbInit() {
+          this.socket.onopen = (event) => {
+            this.socket.send(JSON.stringify({ id: 1, method: 'use', params: ['test', 'test'] }))
+            this.socket.send(
+              JSON.stringify({ id: 2, method: 'authenticate', params: [this.token] }),
+            )
+
+            let query_no_live = this.query.split('LIVE ')[1]
+            let query_live = this.query.split('LIMIT')[0] // also needs to split by GROUP, LIMIT, ORDER
+
+            if (query_no_live) {
+              this.dbSend({ id: 3, method: 'query', params: [query_no_live] })
+              this.dbSend({ id: 4, method: 'query', params: [query_live] }) // contains LIVE
+            } else {
+              this.dbSend({ id: 3, method: 'query', params: [this.query] })
+            }
+          }
+
+          this.socket.onclose = (event) => {
+            console.log('close', event)
+          }
+        }
+
+        dbListen() {
+          let live_id = ''
+
+          this.socket.onmessage = (event) => {
+            const data = JSON.parse(event.data)
+
+            if (data.error) {
+              this.socket.close()
+              throw new Error(`Error: ${data.error.code} - ${data.error.message}`)
+            }
+
+            switch (true) {
+              case data.id === 4:
+                live_id = data.result[0].result
+                break
+
+              case data.id === 3:
+                let result = data.result.map((item) => {
+                  return item.result
+                })
+
+                let rendered = this.view.renderString(this.template.innerHTML, {
+                  result: result[0],
+                })
+
+                this.targetElement().innerHTML = rendered
+
+                this.emit('first', { data: data.result[0].result })
+                break
+
+              case data.id === 2 || data.id === 1:
+                break
+
+              case data.result.id === live_id:
+                let update_data = data.result.result
+
+                switch (data.result.action) {
+                  case 'CREATE':
+                    this.createRow(update_data)
+                    this.emit('created', { data: [update_data] })
+
+                    break
+                  case 'UPDATE':
+                    this.updateRow(update_data)
+                    this.emit('updated', { data: [update_data] })
+
+                    break
+                  case 'DELETE':
+                    this.deleteRow(update_data)
+
+                    break
+                  default:
+                    console.log('Action not recognized')
+                }
+
+                break
+
+              default:
+                console.log(data)
+            }
+          }
+        }
+
+        dbSend(content) {
+          if (this.socket.bufferedAmount == 0) {
+            this.socket.send(JSON.stringify(content))
+          } else {
+            setTimeout(() => {
+              this.dbSend(content)
+            }, 50)
+          }
+        }
+      },
+    )
+</script>

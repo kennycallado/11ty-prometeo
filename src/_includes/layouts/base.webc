@@ -24,17 +24,17 @@ subTitle: 'Prometeo Project'
       type="image/x-icon" />
 
     <link
-      :href="getBundleFileUrl('css', 'global')"
-      rel="stylesheet"
-      webc:keep />
-
-    <link
       href="/assets/css/style.css"
       rel="stylesheet"
       webc:keep />
 
     <link
       href="/assets/css/custom.css"
+      rel="stylesheet"
+      webc:keep />
+
+    <link
+      :href="getBundleFileUrl('css', 'global')"
       rel="stylesheet"
       webc:keep />
 
@@ -52,8 +52,8 @@ subTitle: 'Prometeo Project'
     </script>
 
     <script
-      type="module"
       :src="getBundleFileUrl('js', 'global')"
+      type="module"
       webc:keep></script>
 
     <script
@@ -62,13 +62,13 @@ subTitle: 'Prometeo Project'
       webc:keep></script>
 
     <script
-      src="/assets/js/auth0-spa-js.development.js"
+      src="/assets/js/bootstrap.bundle.min.js"
       type="module"
       webc:keep></script>
 
     <script
+      src="/assets/js/nunjucks.js"
       type="module"
-      src="/assets/js/bootstrap.bundle.min.js"
       webc:keep></script>
   </head>
 
@@ -83,13 +83,13 @@ subTitle: 'Prometeo Project'
 
       <main
         id="content"
-        class="container"
+        class="container pb-2"
         @raw="content"></main>
     </div>
 
     <script
-      type="module"
       @raw="getBundle('js')"
+      type="module"
       webc:keep></script>
   </body>
 </html>

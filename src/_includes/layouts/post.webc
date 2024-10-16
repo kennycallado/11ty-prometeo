@@ -1,0 +1,49 @@
+---
+layout: base
+---
+
+<style>
+  #module {
+    max-width: 60rem;
+
+    margin-inline: auto;
+    padding: 1rem;
+    border-radius: 0.5rem;
+
+    background-color: rgba(var(--bs-tertiary-bg-rgb), 0.7);
+  }
+
+  blockquote {
+    font-style: italic;
+    color: #666;
+    margin: 0;
+    padding: 0;
+  }
+
+  img,
+  video {
+    display: block;
+    max-width: 100%;
+    margin-inline: auto;
+    border-radius: 0.5rem;
+    shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+  }
+</style>
+
+<div class="d-flex justify-content-between">
+  <a
+    class="text-decoration-none text-primary"
+    :href="url(back)">
+    <span class="display-6">&larr;</span>
+  </a>
+
+  <h1
+    class="text-center"
+    @raw="title"></h1>
+
+  <div></div>
+</div>
+
+<section
+  id="module"
+  @raw="content"></section>
