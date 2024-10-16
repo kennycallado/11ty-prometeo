@@ -45,6 +45,11 @@ export default function (eleventyConfig) {
   })
 
   eleventyConfig.addPassthroughCopy({
+    './node_modules/nunjucks/browser/nunjucks.js': 'assets/js/nunjucks.js',
+    './node_modules/nunjucks/browser/nunjucks.js.map': 'assets/js/nunjucks.js.map',
+  })
+
+  eleventyConfig.addPassthroughCopy({
     './node_modules/bootstrap/dist/js/bootstrap.bundle.min.js':
       'assets/js/bootstrap.bundle.min.js',
     './node_modules/bootstrap/dist/js/bootstrap.bundle.min.js.map':
