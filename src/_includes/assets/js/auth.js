@@ -1,10 +1,7 @@
-// TODO: probably should be a class
-// and get constants for url, options, etc...
-
 class Auth {
   #user = {}
   #token = ''
-  #endpoint = 'http://localhost:8000'
+  #endpoint = DB_URL
 
   constructor() {
     this.#token = localStorage.getItem('token')
@@ -44,16 +41,14 @@ class Auth {
   }
 
   async signin(username, password) {
-    const res = await fetch(this.#endpoint + '/signin', {
+    const res = await fetch(`${this.#endpoint}/signin`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        NS: 'test',
-        DB: 'test',
-        AC: 'user',
+        ...DB_CONFIG,
         username,
         password,
       }),

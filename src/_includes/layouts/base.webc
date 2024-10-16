@@ -44,6 +44,11 @@ subTitle: 'Prometeo Project'
 
     <script webc:keep>
       var DB_URL = 'http://localhost:8000'
+      var DB_CONFIG = {
+        NS: 'test',
+        DB: 'test',
+        AC: 'user',
+      }
     </script>
 
     <script
