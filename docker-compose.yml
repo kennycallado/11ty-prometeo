@@ -11,7 +11,7 @@ services:
   #   restart: always
 
   surrealdb:
-    image: surrealdb/surrealdb:v2.0.1
+    image: surrealdb/surrealdb:v2
     container_name: surrealdb
     ports:
       - '8000:8000'
