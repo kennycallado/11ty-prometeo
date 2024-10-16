@@ -42,6 +42,10 @@ subTitle: 'Prometeo Project'
       @raw="getBundle('css')"
       webc:keep></style>
 
+    <script webc:keep>
+      var DB_URL = 'http://localhost:8000'
+    </script>
+
     <script
       type="module"
       :src="getBundleFileUrl('js', 'global')"
