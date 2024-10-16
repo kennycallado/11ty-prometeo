@@ -1,0 +1,46 @@
+---
+layout: base
+title: About Us
+
+auth: false
+---
+
+<h1>About us</h1>
+
+<image
+  class="d-block m-auto rounded shadow"
+  src="/assets/img/blog-placeholder-about.jpg"></image>
+
+<h2>The project</h2>
+
+<p>Blah Blah</p>
+
+<h2>The team</h2>
+<div class="row">
+  <div
+    webc:for="item of collections.team"
+    class="col">
+    <div
+      class="card my-2"
+      style="width: 18rem; margin-inline: auto">
+      <img
+        class="card-img-top"
+        :src="item.data.photo"
+        alt="Team member photo" />
+
+      <div class="card-body">
+        <h5
+          class="card-title"
+          @text="item.data.name"></h5>
+
+        <p
+          class="card-text"
+          @text="item.rawInput"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>The lab</h2>
+
+<p>Blah Blah</p>
