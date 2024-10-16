@@ -17,10 +17,13 @@ auth: false
   form.addEventListener('submit', async (e) => {
     e.preventDefault()
 
-    // validate form
-    const [username, password] = form.elements
+    const formData = new FormData(form)
+    const data = Object.fromEntries(formData)
 
-    if (!username.value || !password.value) {
+    // validate form
+    const { username, password } = data
+
+    if (!username || !password) {
       alert('Error: Invalid credentials\n- Please fill in all fields')
       return
     }
@@ -34,7 +37,7 @@ auth: false
 
     // send request to server
 
-    auth.signin(username.value, password.value).then((foo) => {
+    auth.signin(username, password).then((foo) => {
       if (foo) {
         const pathname = localStorage.getItem('pathname')
         if (pathname) {
@@ -85,6 +88,7 @@ auth: false
         <input
           class="form-control"
           id="inputPassword"
+          name="password"
           autocomplete="on"
           type="password" />
       </div>

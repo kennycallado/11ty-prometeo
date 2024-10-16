@@ -6,18 +6,159 @@ admin: true
 auth: true
 ---
 
-<h1>Admin</h1>
+<style>
+  button {
+    border: none;
+    background: none;
+    cursor: pointer;
+  }
+</style>
 
-<div class="d-flex">
+<div class="d-flex justify-content-between">
   <a
     class="text-decoration-none text-primary"
-    :href="url('/auth/admin')">
+    :href="url('/auth/admin/')">
     <span class="display-6">&larr;</span>
   </a>
 
-  <h2 class="ms-4">User manager</h2>
+  <h3 class="ms-4">User manager</h3>
+
+  <!-- modal - start -->
+  <button
+    type="button"
+    class="btn btn-outline-primary float-end"
+    data-bs-toggle="modal"
+    data-bs-target="#create-user-modal">
+    Create
+  </button>
+
+  <prom-modal
+    class="modal"
+    tabindex="-1"
+    id="create-user-modal"
+    :data-trigger-id="uid + '-dialog'">
+    <h5 slot="header">Create new user</h5>
+
+    <div slot="body">
+      <form id="form-create-user">
+        <div class="mb-3">
+          <label
+            class="form-label"
+            for="input-name">
+            Name
+          </label>
+
+          <input
+            class="form-control"
+            id="input-name"
+            name="name"
+            type="text" />
+        </div>
+
+        <div class="mb-3">
+          <label
+            class="form-label"
+            for="input-email">
+            Email
+          </label>
+
+          <input
+            class="form-control"
+            id="input-email"
+            name="email"
+            type="email" />
+        </div>
+
+        <div class="mb-3">
+          <label
+            class="form-label"
+            for="input-password">
+            Password
+          </label>
+
+          <input
+            class="form-control"
+            id="input-password"
+            name="password"
+            type="text" />
+        </div>
+      </form>
+    </div>
+
+    <div slot="footer">
+      <button
+        class="btn btn-secondary"
+        data-bs-dismiss="modal"
+        type="button">
+        Close
+      </button>
+
+      <button
+        class="btn btn-primary"
+        form="form-create-user"
+        type="submit">
+        Submit
+      </button>
+    </div>
+  </prom-modal>
+
+  <script
+    type="module"
+    webc:keep>
+    import { auth } from '/assets/js/auth.js'
+
+    const form = document.getElementById('form-create-user')
+    const urlDb = `${DB_URL}/sql`
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault()
+
+      const formData = new FormData(form)
+      const data = Object.fromEntries(formData)
+
+      validateForm(data) && createUser(data, urlDb)
+    })
+
+    function validateForm(data) {
+      const { name, email, password } = data
+      if (!name || !email || !password) {
+        alert('Error: Invalid credentials\n- Please fill in all fields')
+        return false
+      }
+
+      return true
+    }
+
+    function createUser(data, url) {
+      fetch(`${url}/sql`, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          Authorization: `Bearer ${auth.getToken()}`,
+          'Content-Type': 'application/json',
+        },
+        body: `
+          CREATE user CONTENT {
+            name: "${data.name}",
+            email: "${data.email}",
+            username: rand::string(8),
+            password: "${data.password}",
+          };`,
+      })
+        .then((res) => res.json())
+        .then((res) => {
+          const close = form.closest('.modal').querySelector('[data-bs-dismiss="modal"]')
+
+          alert("Don't forget to copy the password!\n- " + data.password)
+
+          form.reset()
+          close.click()
+        })
+    }
+  </script>
+  <!-- modal - end -->
 </div>
 
-<!-- <prom-table-users></prom-table-users> -->
+<hr />
 
-<button class="btn btn-primary float-end">Create</button>
+<prom-table-users></prom-table-users>
