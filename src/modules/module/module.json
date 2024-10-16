@@ -1,0 +1,7 @@
+{
+  "layout": "post",
+  "back": "/modules/",
+  "tags": ["module"],
+  "admin": false,
+  "auth": true
+}

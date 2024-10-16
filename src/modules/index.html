@@ -1,8 +1,9 @@
 ---
 layout: base
-title: Lab Blog
+title: Modules List
 
-auth: false
+admin: false
+auth: true
 ---
 
 <style webc:scoped>
@@ -95,7 +96,7 @@ auth: false
 
 <section>
   <ul>
-    <li webc:for="item of sortAlpha(collections.post)">
+    <li webc:for="item of sortAlpha(collections.module)">
       <a :href="item.url">
         <image
           class="w-100"
