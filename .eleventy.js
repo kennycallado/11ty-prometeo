@@ -27,6 +27,14 @@ export default function (eleventyConfig) {
     toFileDirectory: '../dist/assets/bundle',
   })
 
+  eleventyConfig.addFilter('sortAlpha', (collection) => {
+    return collection.sort((a, b) => {
+      if (a.fileSlug < b.fileSlug) return -1
+      else if (a.fileSlug > b.fileSlug) return 1
+      else return 0
+    })
+  })
+
   // Watch CSS files for changes
   eleventyConfig.setBrowserSyncConfig({
     files: './dist/assets/css/**/*.css',
